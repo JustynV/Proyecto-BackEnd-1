@@ -25,75 +25,76 @@ async function GetBooks(req, res) {
 }
 
 async function GetBook(id) {
-    // llamada a controlador con los filtros
+  // llamada a controlador con los filtros
 
-    const resultadosBusqueda = await getBookById(id);
+  const resultadosBusqueda = await getBookById(id);
 
-    return resultadosBusqueda
+  return resultadosBusqueda;
 }
 
 async function PostBook(req, res) {
   try {
-    token = AuthController.cookiesJWT(req, res)
+    token = AuthController.cookiesJWT(req, res);
     if (token !== "Invalid") {
       await createBook(req.body, token._id);
       res.status(200).json({
         mensaje: "Creado con exito. 👍",
       });
-    }else{
+    } else {
       res.status(500).json({
-        error: "Token Invalido"
-      })
+        error: "Token Invalido",
+      });
     }
   } catch (e) {
     res.status(500).json({
-      error: e
-    })
+      error: e,
+    });
   }
 }
 
 async function PatchBook(req, res) {
   try {
     // llamada a controlador con los datos
-    token = AuthController.cookiesJWT(req, res)
-    book = GetBook(req.body._id)
+    token = AuthController.cookiesJWT(req, res);
+    book = GetBook(req.body._id);
     if (token !== "Invalid" && book.author_id !== token._id) {
-      res.status(500).json({
-        mensaje: "Token invalido",
-      });
-    } else {
       await updateBook(req.body);
       res.status(200).json({
         mensaje: "Actualizado con exito. 👍",
       });
+    } else {
+      res.status(500).json({
+        mensaje: "Token invalido",
+      });
     }
-
   } catch (e) {
     res.status(500).json({
-      error: e
-    })  }
+      error: e,
+    });
+  }
 }
 
 async function DeleteBook(req, res) {
   try {
     // llamada a controlador con los datos
-    token = AuthController.cookiesJWT(req, res)
-    book = await getBookById(req.params.id)
+    token = AuthController.cookiesJWT(req, res);
+    book = await getBookById(req.params.id);
 
     if (token !== "Invalid" && book.author_id !== token._id) {
-      res.status(500).json({
-        mensaje: "Token invalido",
-      });
-    } else {
       await deleteBook(req.params.id);
       res.status(200).json({
         mensaje: "Eliminado con exito. 👍",
       });
+    } else {
+      res.status(500).json({
+        mensaje: "Token invalido",
+      });
     }
   } catch (e) {
     res.status(500).json({
-      error: e
-    })  }
+      error: e,
+    });
+  }
 }
 
 router.get("/", GetBooks);

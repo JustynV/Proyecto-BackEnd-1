@@ -6,7 +6,8 @@ const schemaBook = new mongoose.Schema({
     publisher:{type:String,required:true},
     title:{type:String,required:true},
     author:{type:String,required:true},
-    author_id:{type:String, required:true}
+    author_id:{type:String, required:true, immutable: true},
+    deleted:{type:Boolean, required:true, default:false}
   }, {
     versionKey: false,
     timestamps: true

@@ -36,7 +36,7 @@ async function updateOrderMongo(id, status) {
 }
 
 async function deleteOrderMongo(id) {
-  const resultado = await Order.findByIdAndDelete(id);
+  const resultado = await Order.findByIdAndUpdate(id, {deleted:true});
 
   return resultado;
 }

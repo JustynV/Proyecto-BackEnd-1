@@ -1,6 +1,5 @@
 const User = require("./user.model.js");
-const jwt = require("jsonwebtoken");
-const secretKey = "secretsauce";
+const AuthController = require("../Auth/AuthController.js")
 
 async function getUserMongo(filter) {
   const user = await User.findOne(filter);
@@ -36,8 +35,7 @@ async function loginUserMongo(datos) {
 
   payload = { _id: user.id };
   try {
-    const token = jwt.sign(payload, secretKey, { expiresIn: "3 days" });
-    return token;
+    return AuthController.generateToken(payload)
   } catch (error) {
     console.log(error);
   }
@@ -48,7 +46,7 @@ async function updateUserMongo(update, user) {
   return updatedUser;
 }
 async function deleteUserMongo(id) {
-  deletedUser = User.deleteOne(id);
+  deletedUser = User.findByIdAndUpdate(id, {deleted: true});
 
   return deletedUser;
 }

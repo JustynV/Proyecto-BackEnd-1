@@ -37,6 +37,7 @@ async function CreateUser(req, res) {
     res.cookie("token", cookie, { httpOnly: true });
     res.status(200).json({
       user,
+      cookie
     });
   } catch (e) {
     res.status(500).json({ msg: "No se pudo crear el user" });
@@ -80,11 +81,18 @@ async function PatchUser(req, res) {
 async function DeleteUser(req, res) {
   try {
     // llamada a controlador con los datos
-    deleteUser(req.params.id);
-
-    res.status(200).json({
-      mensaje: "Exito. 👍",
-    });
+    token = AuthController.cookiesJWT(req, res);
+    user = findUserById(req.params.id);
+    if(token !== "Invalid" && token._id === user.id){
+      deleteUser(req.params.id);
+      res.status(200).json({
+        mensaje: "Exito. 👍",
+      });
+    }else{
+      res.status(200).json({
+        mensaje: "Token Invalido",
+      });
+    }
   } catch (e) {
     res.status(500).json({
       error: e,

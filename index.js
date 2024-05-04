@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const cookieParser = require("cookie-parser")
-
+const uri = process.env.DB_URI
 const app = express();
 
 app.use(cors());
@@ -23,7 +23,6 @@ const rutasOrder= require("./order/order.route.js")
 app.use('/order', rutasOrder);
 
 
-let uri = "mongodb+srv://justynvelasquez21:XqomEE8uyXGGdsja@be-db.jyb2hly.mongodb.net/?retryWrites=true&w=majority&appName=BE-DB"
 // aqui va la connection string VVVVV
 mongoose.connect(uri).then(() => {
     console.log("CONNECTED")

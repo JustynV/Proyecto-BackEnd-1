@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken")
-const secretKey = "secretsauce";
+const secretKey = process.env.SECRET_KEY;
 
 exports.cookiesJWT = (req,res) =>{
     const token = req.cookies.token
@@ -9,4 +9,8 @@ exports.cookiesJWT = (req,res) =>{
     } catch (error) {
         return "Invalid"
     }
+}
+
+exports.generateToken = (payload) =>{
+    return jwt.sign(payload, secretKey, { expiresIn: "3 days" });
 }
