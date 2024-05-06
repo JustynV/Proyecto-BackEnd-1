@@ -2,7 +2,6 @@ const { createBookMongo, getBookMongo,deleteBookMongo,updateBookMongo,getUniqueB
 
 async function getFilteredBooks(query) {
     
-    // hacer llamado a base de datos con el filtro de tipo
     const resultadosBusqueda = await getBookMongo(query);
 
     return resultadosBusqueda;
@@ -10,7 +9,6 @@ async function getFilteredBooks(query) {
 
 async function getBookById(id) {
 
-    // hacer llamado a base de datos con el filtro de tipo
     const bookFound = await getUniqueBookMongo(id);
     
     return bookFound;
@@ -18,7 +16,6 @@ async function getBookById(id) {
 
 async function createBook(datos, id) {
 
-    // hacer llamado a base de datos con el filtro de tipo
     datos["author_id"] = id
     const createdBook = await createBookMongo(datos);
 
@@ -29,7 +26,6 @@ async function createBook(datos, id) {
 function updateBook(datos) {
     const { _id, ...cambios } = datos;
 
-    // hacer llamado a base de datos con el filtro de tipo
     const updatedBook = updateBookMongo(_id, cambios);
 
     return updatedBook;
@@ -37,7 +33,6 @@ function updateBook(datos) {
 
 function deleteBook(id) {
 
-    // hacer llamado a base de datos con el filtro de tipo
     const deletedBook = deleteBookMongo(id);
 
     return deletedBook;

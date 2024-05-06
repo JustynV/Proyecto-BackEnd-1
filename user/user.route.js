@@ -12,7 +12,6 @@ const AuthController = require("../Auth/AuthController.js");
 
 async function GetUser(req, res) {
   try {
-    // llamada a controlador con los filtros
     token = AuthController.cookiesJWT(req, res);
     if (token !== "Invalid") {
       const resultadosBusqueda = await getUser(req.query);
@@ -31,7 +30,6 @@ async function GetUser(req, res) {
 
 async function CreateUser(req, res) {
   try {
-    // llamada a controlador con los filtros
     const user = await createUser(req.body);
     const cookie = await loginUser(req.body);
     res.cookie("token", cookie, { httpOnly: true });
@@ -50,7 +48,6 @@ async function CreateUser(req, res) {
 
 async function LoginUser(req, res) {
   try {
-    // llamada a controlador con los filtros
     const cookie = await loginUser(req.body);
     res.cookie("token", cookie, { httpOnly: true });
     res.status(200).json({ msg: "Ingreso Exitoso"});
@@ -61,7 +58,6 @@ async function LoginUser(req, res) {
 
 async function PatchUser(req, res) {
   try {
-    // llamada a controlador con los datos
     token = AuthController.cookiesJWT(req, res);
     user = await findUserById(req.body._id);
     if (user !== undefined && token._id === user.id && token != "Invalid") {
@@ -84,7 +80,6 @@ async function PatchUser(req, res) {
 
 async function DeleteUser(req, res) {
   try {
-    // llamada a controlador con los datos
     token = AuthController.cookiesJWT(req, res);
     user = findUserById(req.params.id);
     if(token !== "Invalid" && token._id === user.id){

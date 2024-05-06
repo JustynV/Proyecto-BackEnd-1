@@ -11,12 +11,29 @@ const AuthController = require("../Auth/AuthController.js");
 
 async function getOrders(req, res) {
   try {
-    // llamada a controlador con los filtros
     token = AuthController.cookiesJWT(req, res);
     if (token !== "Invalid") {
       const resultadosBusqueda = await getFilteredOrders(req.query, token._id);
       res.status(200).json({
         ...resultadosBusqueda,
+      });
+    } else {
+      res.status(500).json({
+        error: "Token Invalida",
+      });
+    }
+  } catch (e) {
+    res.status(500).json({ msg: "" });
+  }
+}
+
+async function GetOrderById(req, res) {
+  try {
+    token = AuthController.cookiesJWT(req, res);
+    if (token !== "Invalid") {
+      const resultadoBusqueda = await getOrderById(req.params.id, token._id);
+      res.status(200).json({
+        order:resultadoBusqueda
       });
     } else {
       res.status(500).json({
@@ -83,6 +100,7 @@ async function PatchOrder(req, res) {
 }
 
 router.get("/", getOrders);
+router.get("/:id", GetOrderById);
 router.post("/", PostOrder);
 router.patch("/:id/:status", PatchOrder);
 

@@ -12,7 +12,6 @@ const AuthController = require("../Auth/AuthController.js");
 
 async function GetBooks(req, res) {
   try {
-    // llamada a controlador con los filtros
 
     const resultadosBusqueda = await getFilteredBooks(req.query);
 
@@ -23,6 +22,20 @@ async function GetBooks(req, res) {
     res.status(500).json({ msg: "" });
   }
 }
+
+async function GetBookById(req, res) {
+  try {
+
+    const resultadoBusqueda = await getBookById(req.params.id);
+
+    res.status(200).json({
+      Libro_Hallado: resultadoBusqueda
+    });
+  } catch (e) {
+    res.status(500).json({ msg: "" });
+  }
+}
+
 
 async function PostBook(req, res) {
   try {
@@ -46,7 +59,6 @@ async function PostBook(req, res) {
 
 async function PatchBook(req, res) {
   try {
-    // llamada a controlador con los datos
     token = AuthController.cookiesJWT(req, res);
     book = await getBookById(req.body._id);
     if (token !== "Invalid" && book.author_id === token._id) {
@@ -68,7 +80,6 @@ async function PatchBook(req, res) {
 
 async function DeleteBook(req, res) {
   try {
-    // llamada a controlador con los datos
     token = AuthController.cookiesJWT(req, res);
     book = await getBookById(req.params.id);
 
@@ -90,6 +101,7 @@ async function DeleteBook(req, res) {
 }
 
 router.get("/", GetBooks);
+router.get("/:id", GetBookById);
 router.post("/", PostBook);
 router.patch("/", PatchBook);
 router.delete("/:id", DeleteBook);
