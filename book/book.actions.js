@@ -1,7 +1,10 @@
 const Book = require("./book.model");
 
 async function getBookMongo(filtros) {
-  const bookFiltered = await Book.find(filtros);
+  if (!filtros.hasOwnProperty("deleted")) {
+    filtros["deleted"] = false
+  }
+  const bookFiltered = await Book.find(filtros, {deleted: 0, createdAt:0, updatedAt:0, author_id:0});
 
   return {
     resultados: bookFiltered,

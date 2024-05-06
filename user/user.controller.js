@@ -1,9 +1,6 @@
-const { createUserMongo, getUserMongo,deleteUserMongo,updateUserMongo, loginUserMongo } = require("./user.actions");
+const { createUserMongo, getUserMongo,deleteUserMongo,updateUserMongo, loginUserMongo, getUserByIdMongo } = require("./user.actions");
 
 async function getUser(query) {
-    const {email, name} = query;
-
-
     const resultadosBusqueda = await getUserMongo(query);
 
     return resultadosBusqueda;

@@ -1,9 +1,9 @@
 const { createOrderMongo, getOrderMongo,deleteOrderMongo,updateOrderMongo, getOrderByIdMongo} = require("./order.actions");
 
-async function getFilteredOrders(query) {
+async function getFilteredOrders(query,id) {
     
     // hacer llamado a base de datos con el filtro de tipo
-    const resultadosBusqueda = await getOrderMongo(query);
+    const resultadosBusqueda = await getOrderMongo(query,id);
 
     return resultadosBusqueda;
 }
@@ -19,7 +19,7 @@ async function getOrderById(id) {
 async function createOrder(datos, id) {
 
     // hacer llamado a base de datos con el filtro de tipo
-    datos["creator_id"] = id
+    datos["buyer_id"] = id
     const productoCreado = await createOrderMongo(datos);
 
     return productoCreado;

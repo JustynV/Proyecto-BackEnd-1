@@ -1,21 +1,19 @@
 const User = require("./user.model.js");
 const AuthController = require("../Auth/AuthController.js")
 
-async function getUserMongo(filter) {
-  const user = await User.findOne(filter);
+async function getUserMongo(filtros) {
+  if (!filtros.hasOwnProperty("deleted")) {
+    filtros["deleted"] = false
+  }
+  const user = await User.findOne(filtros);
   return {
     User: user,
   };
 }
 
 async function getUserByIdMongo(id) {
-  await User.findById(id)
-    .then((user) => {
-      return user;
-    })
-    .catch((err)=>{
-      return undefined
-    });
+  const userFound = await User.findById(id)
+  return userFound
 }
 
 async function createUserMongo(datos) {
@@ -40,9 +38,8 @@ async function loginUserMongo(datos) {
     console.log(error);
   }
 }
-async function updateUserMongo(update, user) {
-  updatedUser = User.update(update);
-
+async function updateUserMongo(id, update) {
+  updatedUser = User.findByIdAndUpdate(id ,update);
   return updatedUser;
 }
 async function deleteUserMongo(id) {
@@ -53,6 +50,7 @@ async function deleteUserMongo(id) {
 
 module.exports = {
   getUserMongo,
+  getUserByIdMongo,
   updateUserMongo,
   createUserMongo,
   loginUserMongo,

@@ -11,9 +11,9 @@ async function getFilteredBooks(query) {
 async function getBookById(id) {
 
     // hacer llamado a base de datos con el filtro de tipo
-    const resultadosBusqueda = await getUniqueBookMongo(id);
+    const bookFound = await getUniqueBookMongo(id);
     
-    return resultadosBusqueda;
+    return bookFound;
 }
 
 async function createBook(datos, id) {

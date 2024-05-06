@@ -1,7 +1,12 @@
 const Order = require("./order.model");
 
-async function getOrderMongo(filtros) {
-  const OrderFiltered = await Order.find(filtros);
+async function getOrderMongo(filtros,id) {
+  if (!filtros.hasOwnProperty("deleted")) {
+    filtros["deleted"] = false
+  }
+  filtros["buyer_id"] = id
+  console.log(filtros)
+  const OrderFiltered = await Order.find(filtros, {deleted: 0, createdAt:0, updatedAt:0, buyer_id:0, seller_id:0});
 
   return {
     resultados: OrderFiltered,
@@ -9,13 +14,8 @@ async function getOrderMongo(filtros) {
 }
 
 async function getOrderByIdMongo(id) {
-  await Order.findById(id)
-    .then((order) => {
-      return order;
-    })
-    .catch((error) => {
-        return undefined
-    });
+  const order = Order.findById(id)
+  return order
 }
 
 async function createOrderMongo(datos) {
@@ -25,7 +25,7 @@ async function createOrderMongo(datos) {
 }
 
 async function updateOrderMongo(id, status) {
-  await Order.findByIdAndUpdate({ _id: id }, { state: status })
+  await Order.findByIdAndUpdate({ _id: id }, { state: status, deleted: true })
     .then((resultado) => {
       return resultado;
     })

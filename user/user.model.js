@@ -8,7 +8,7 @@ const schemaUser = new mongoose.Schema({
   },
   name: { type: String, required: true },
   password: { type: String, required: true },
-  deleted: { type: Boolean, required: true },
+  deleted: { type: Boolean, default:false, required: true},
 });
 
 const Model = mongoose.model("User", schemaUser);

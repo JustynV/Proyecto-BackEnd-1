@@ -14,7 +14,7 @@ async function getOrders(req, res) {
     // llamada a controlador con los filtros
     token = AuthController.cookiesJWT(req, res);
     if (token !== "Invalid") {
-      const resultadosBusqueda = await getFilteredOrders(req.query);
+      const resultadosBusqueda = await getFilteredOrders(req.query, token._id);
       res.status(200).json({
         ...resultadosBusqueda,
       });
@@ -26,10 +26,6 @@ async function getOrders(req, res) {
   } catch (e) {
     res.status(500).json({ msg: "" });
   }
-}
-
-async function getOrder(id) {
-  return await getOrderById(id);
 }
 
 async function PostOrder(req, res) {
@@ -55,11 +51,11 @@ async function PostOrder(req, res) {
 async function PatchOrder(req, res) {
   try {
     token = AuthController.cookiesJWT(req, res);
-    orderToChange = await getOrder(req.params.id);
+    orderToChange = await getOrderById(req.params.id);
     if (
       token !== "Invalid" &&
-      orderToChange != undefined &&
-      token._id !== orderToChange.creator_id
+      orderToChange !== undefined &&
+      token._id === orderToChange.buyer_id
     ) {
       if (
         req.params.status !== "Cancelado" ||

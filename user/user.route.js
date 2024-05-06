@@ -36,11 +36,15 @@ async function CreateUser(req, res) {
     const cookie = await loginUser(req.body);
     res.cookie("token", cookie, { httpOnly: true });
     res.status(200).json({
-      user,
-      cookie
+      user: user,
+      msg: " ha sido creado exitosamente"
     });
   } catch (e) {
-    res.status(500).json({ msg: "No se pudo crear el user" });
+    if (e.code == 11000){
+      res.status(500).json({ msg: "Correo ya en uso"});
+    }else{
+    res.status(500).json({ msg: "No se pudo crear el user"});
+    }
   }
 }
 
@@ -49,7 +53,7 @@ async function LoginUser(req, res) {
     // llamada a controlador con los filtros
     const cookie = await loginUser(req.body);
     res.cookie("token", cookie, { httpOnly: true });
-    res.status(200).json({ token: cookie });
+    res.status(200).json({ msg: "Ingreso Exitoso"});
   } catch (e) {
     res.status(500).json({ msg: "No se pudo hacer login al user" });
   }
@@ -59,8 +63,8 @@ async function PatchUser(req, res) {
   try {
     // llamada a controlador con los datos
     token = AuthController.cookiesJWT(req, res);
-    user = findUserById(req._id);
-    if (user !== undefined && token._id === user.id) {
+    user = await findUserById(req.body._id);
+    if (user !== undefined && token._id === user.id && token != "Invalid") {
       updateUser(req.body);
 
       res.status(200).json({
