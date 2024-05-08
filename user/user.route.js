@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+
 const {
   getUser,
   createUser,
@@ -34,8 +35,7 @@ async function CreateUser(req, res) {
     const cookie = await loginUser(req.body);
     res.cookie("token", cookie, { httpOnly: true });
     res.status(200).json({
-      user: user,
-      msg: " ha sido creado exitosamente"
+      msg: "El usuario ha sido creado exitosamente"
     });
   } catch (e) {
     if (e.code == 11000){

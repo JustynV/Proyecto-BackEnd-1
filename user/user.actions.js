@@ -1,5 +1,6 @@
 const User = require("./user.model.js");
 const AuthController = require("../Auth/AuthController.js")
+const argon2 = require('argon2');
 
 async function getUserMongo(filtros) {
   if (!filtros.hasOwnProperty("deleted")) {
@@ -17,7 +18,13 @@ async function getUserByIdMongo(id) {
 }
 
 async function createUserMongo(datos) {
-  const user = await User.create(datos);
+  hashed = await argon2.hash(datos.password)
+  datos_hash = {
+    name: datos.name,
+    email: datos.email,
+    password:hashed
+  }
+  const user = await User.create(datos_hash);
   return {
     user,
   };
@@ -26,11 +33,9 @@ async function createUserMongo(datos) {
 async function loginUserMongo(datos) {
   const { name, email, password } = datos;
   const user = await User.findOne({ email: email });
-
-  if (user.password !== password) {
+  if (!await argon2.verify(user.password, password)) {
     return res.status(500);
   }
-
   payload = { _id: user.id };
   try {
     return AuthController.generateToken(payload)
