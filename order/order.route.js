@@ -8,6 +8,7 @@ const {
   deleteOrder,
 } = require("./order.controller");
 const AuthController = require("../Auth/AuthController.js");
+const bookController = require("../book/book.controller.js")
 
 async function getOrders(req, res) {
   try {
@@ -33,7 +34,7 @@ async function GetOrderById(req, res) {
     if (token !== "Invalid") {
       const resultadoBusqueda = await getOrderById(req.params.id, token._id);
       res.status(200).json({
-        order:resultadoBusqueda
+        order: resultadoBusqueda
       });
     } else {
       res.status(500).json({
@@ -49,6 +50,22 @@ async function PostOrder(req, res) {
   try {
     token = AuthController.cookiesJWT(req, res);
     if (token !== "Invalid") {
+      books = req.body.items
+      try {
+        author = bookController.getBookById(books[0]).author_id
+        for (i = 1; i < books.lenght(); i++) {
+          if (bookController.getBookById(books[i]).author_id != author) {
+            res.status(500).json({
+              error: "Libro de diferente autor",
+            });
+          }
+        }
+      } catch (error) {
+        res.status(500).json({
+          error: "Libro Inexistente",
+        });
+      }
+
       await createOrder(req.body, token._id);
     } else {
       res.status(500).json({
@@ -71,23 +88,35 @@ async function PatchOrder(req, res) {
     orderToChange = await getOrderById(req.params.id);
     if (
       token !== "Invalid" &&
-      orderToChange !== undefined &&
-      token._id === orderToChange.buyer_id
+      orderToChange !== undefined
     ) {
-      if (
-        req.params.status !== "Cancelado" ||
-        req.params.status !== "Completado"
-      ) {
-        updateOrder(req.params.id, req.params.status);
-      }else{
+      if (token._id === orderToChange.buyer_id) {
+        if (req.params.status !== "Cancelado") {
+          updateOrder(req.params.id, req.params.status);
+        } else {
+          res.status(500).json({
+            error: "Estado no válido",
+          });
+        }
+      } else if (token._id === orderToChange.seller_id) {
+        if (req.params.status !== "Cancelado" || req.params.status !== "Completado") {
+          updateOrder(req.params.id, req.params.status);
+        } else {
+          res.status(500).json({
+            error: "Estado no válido",
+          });
+        }
+      }
+      else {
         res.status(500).json({
-          mensaje: "Error de estado",
+          mensaje: "Usuario no autorizado",
         });
       }
       res.status(200).json({
         mensaje: "Exito. 👍",
       });
-    } else {
+    }
+    else {
       res.status(500).json({
         error: "Token o ID de pedido Invalida",
       });
